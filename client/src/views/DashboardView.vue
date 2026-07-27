@@ -9,6 +9,7 @@ import TheTaskbar from "../components/layout/TheTaskbar.vue";
 import ProjectCard from "../components/desktop/ProjectCard.vue";
 import FolderCard from "../components/desktop/FolderCard.vue";
 import NewFolderModal from "../components/modals/NewFolderModal.vue";
+import NewTaskModal from "../components/modals/NewTaskModal.vue";
 
 const toast = useToastStore();
 const projectsStore = useProjectsStore();
@@ -42,6 +43,7 @@ function moveFolder(id, x, y) {
 }
 
 const showNewFolderModal = ref(false);
+const showNewTaskModal = ref(false);
 </script>
 
 <template>
@@ -69,7 +71,7 @@ const showNewFolderModal = ref(false);
 
     <TheTaskbar
       @new-project="notImplementedYet"
-      @new-task="notImplementedYet"
+      @new-task="showNewTaskModal = true"
       @new-folder="showNewFolderModal = true"
       @all-tasks="notImplementedYet"
       @toggle-calendar="notImplementedYet"
@@ -77,6 +79,7 @@ const showNewFolderModal = ref(false);
     />
 
     <NewFolderModal :show="showNewFolderModal" @close="showNewFolderModal = false" />
+    <NewTaskModal :show="showNewTaskModal" @close="showNewTaskModal = false" />
   </div>
 </template>
 
