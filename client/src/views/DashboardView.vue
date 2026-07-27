@@ -7,6 +7,7 @@ import { useTasksStore } from "../stores/tasks";
 import { useCommitsStore } from "../stores/commits";
 import TheTaskbar from "../components/layout/TheTaskbar.vue";
 import ProjectCard from "../components/desktop/ProjectCard.vue";
+import FolderCard from "../components/desktop/FolderCard.vue";
 
 const toast = useToastStore();
 const projectsStore = useProjectsStore();
@@ -35,6 +36,14 @@ function notImplementedYet() {
 <template>
   <div class="dashboard">
     <div class="desktop-area">
+      <FolderCard
+        v-for="folder in foldersStore.items"
+        :key="folder.id"
+        :folder="folder"
+        :style="{ left: folder.x + 'px', top: folder.y + 'px' }"
+        @open="notImplementedYet"
+        @contextmenu="notImplementedYet"
+      />
       <ProjectCard
         v-for="project in projectsStore.items"
         :key="project.id"
