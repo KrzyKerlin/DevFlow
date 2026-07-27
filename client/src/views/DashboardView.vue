@@ -31,6 +31,14 @@ onMounted(async () => {
 function notImplementedYet() {
   toast.show("Ta funkcja pojawi się w kolejnym commicie.", "info");
 }
+
+function moveProject(id, x, y) {
+  projectsStore.update(id, { x, y }).catch((err) => toast.show(err.message, "error"));
+}
+
+function moveFolder(id, x, y) {
+  foldersStore.update(id, { x, y }).catch((err) => toast.show(err.message, "error"));
+}
 </script>
 
 <template>
@@ -43,6 +51,7 @@ function notImplementedYet() {
         :style="{ left: folder.x + 'px', top: folder.y + 'px' }"
         @open="notImplementedYet"
         @contextmenu="notImplementedYet"
+        @move="moveFolder"
       />
       <ProjectCard
         v-for="project in projectsStore.items"
@@ -51,6 +60,7 @@ function notImplementedYet() {
         :style="{ left: project.x + 'px', top: project.y + 'px' }"
         @open="notImplementedYet"
         @contextmenu="notImplementedYet"
+        @move="moveProject"
       />
     </div>
 

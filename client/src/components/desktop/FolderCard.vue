@@ -1,14 +1,18 @@
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useProjectsStore } from "../../stores/projects";
+import { useDraggable } from "../../composables/useDraggable";
 
 const props = defineProps({
   folder: { type: Object, required: true },
 });
 
-const emit = defineEmits(["open", "contextmenu"]);
+const emit = defineEmits(["open", "contextmenu", "move"]);
 
 const projectsStore = useProjectsStore();
+const cardRef = ref(null);
+
+useDraggable(cardRef, (x, y) => emit("move", props.folder.id, x, y));
 
 const projectCount = computed(
   () => projectsStore.items.filter((p) => p.folderId === props.folder.id).length,
@@ -17,6 +21,7 @@ const projectCount = computed(
 
 <template>
   <div
+    ref="cardRef"
     class="folder-card"
     @dblclick="emit('open', folder.id)"
     @contextmenu.prevent="emit('contextmenu', $event, folder.id)"
@@ -55,6 +60,11 @@ const projectCount = computed(
 .folder-card:hover {
   border-color: var(--js);
   box-shadow: 0 0 24px rgba(234, 179, 8, 0.15);
+}
+.folder-card.dragging {
+  cursor: grabbing;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  z-index: 500;
 }
 .open-btn {
   position: absolute;
