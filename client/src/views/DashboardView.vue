@@ -12,6 +12,7 @@ import NewFolderModal from "../components/modals/NewFolderModal.vue";
 import NewTaskModal from "../components/modals/NewTaskModal.vue";
 import AllTasksModal from "../components/modals/AllTasksModal.vue";
 import NewProjectModal from "../components/modals/NewProjectModal.vue";
+import ProjectDetailModal from "../components/project/ProjectDetailModal.vue";
 
 const toast = useToastStore();
 const projectsStore = useProjectsStore();
@@ -48,6 +49,17 @@ const showNewFolderModal = ref(false);
 const showNewTaskModal = ref(false);
 const showAllTasksModal = ref(false);
 const showNewProjectModal = ref(false);
+const openProjectId = ref(null);
+
+function openProject(id) {
+  openProjectId.value = id;
+}
+
+function openFolder(id) {
+  const folder = foldersStore.items.find((f) => f.id === id);
+  const count = projectsStore.items.filter((p) => p.folderId === id).length;
+  toast.show(`Katalog: ${folder.name} (${count} projektów)`, "info");
+}
 </script>
 
 <template>
@@ -58,7 +70,7 @@ const showNewProjectModal = ref(false);
         :key="folder.id"
         :folder="folder"
         :style="{ left: folder.x + 'px', top: folder.y + 'px' }"
-        @open="notImplementedYet"
+        @open="openFolder"
         @contextmenu="notImplementedYet"
         @move="moveFolder"
       />
@@ -67,7 +79,7 @@ const showNewProjectModal = ref(false);
         :key="project.id"
         :project="project"
         :style="{ left: project.x + 'px', top: project.y + 'px' }"
-        @open="notImplementedYet"
+        @open="openProject"
         @contextmenu="notImplementedYet"
         @move="moveProject"
       />
@@ -86,6 +98,7 @@ const showNewProjectModal = ref(false);
     <NewTaskModal :show="showNewTaskModal" @close="showNewTaskModal = false" />
     <AllTasksModal :show="showAllTasksModal" @close="showAllTasksModal = false" />
     <NewProjectModal :show="showNewProjectModal" @close="showNewProjectModal = false" />
+    <ProjectDetailModal :show="!!openProjectId" :project-id="openProjectId" @close="openProjectId = null" />
   </div>
 </template>
 

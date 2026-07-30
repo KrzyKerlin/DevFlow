@@ -288,6 +288,113 @@ input[type="date"].form-input::-webkit-calendar-picker-indicator:hover {
   border-radius: 3px;
 }
 
+.project-panel {
+  display: flex;
+  height: 100%;
+}
+.panel-sidebar {
+  width: 190px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+}
+.panel-main {
+  flex: 1;
+  min-width: 0;
+  padding-left: 20px;
+}
+.panel-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+.panel-nav-item:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+.panel-nav-item.active {
+  color: var(--accent2);
+  border-color: var(--accent);
+  background: rgba(59, 130, 246, 0.08);
+}
+.proj-overview-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding: 14px;
+  background: var(--bg-card2);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.proj-logo-big {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: var(--bg-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.proj-logo-big img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.proj-info h2 {
+  font-size: 1rem;
+  font-weight: 800;
+}
+.proj-info .domain {
+  font-size: 0.72rem;
+  color: var(--accent2);
+  font-family: monospace;
+}
+.proj-info .desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+@media (max-width: 768px) {
+  .project-panel {
+    flex-direction: column;
+  }
+  .panel-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+  }
+  .panel-nav-item {
+    flex-direction: column;
+    gap: 3px;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+    padding: 8px 12px;
+    font-size: 0.65rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .panel-nav-item.active {
+    border-bottom-color: var(--accent);
+    border-left-color: transparent;
+  }
+  .panel-main {
+    padding-left: 0;
+    padding-top: 16px;
+  }
+}
+
 .tag {
   display: inline-flex;
   align-items: center;
