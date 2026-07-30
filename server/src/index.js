@@ -16,7 +16,9 @@ initSchema();
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+// Default express.json() limit is 100kb — too small for base64 logo images
+// uploaded as part of a project's JSON payload, so we raise it.
+app.use(express.json({ limit: "10mb" }));
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
