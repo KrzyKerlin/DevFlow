@@ -3,6 +3,9 @@ import { ref, computed, watch } from "vue";
 import { useProjectsStore } from "../../stores/projects";
 import BaseModal from "../modals/BaseModal.vue";
 import OverviewPanel from "./OverviewPanel.vue";
+import TasksPanel from "./TasksPanel.vue";
+import NewTaskModal from "../modals/NewTaskModal.vue";
+import EditTaskModal from "../modals/EditTaskModal.vue";
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -30,6 +33,9 @@ watch(
     if (isOpen) activeTab.value = "overview";
   },
 );
+
+const showNewTaskModal = ref(false);
+const editingTask = ref(null);
 </script>
 
 <template>
@@ -56,11 +62,21 @@ watch(
           v-if="activeTab === 'overview'"
           :project="project"
           @go-to-tasks="activeTab = 'tasks'"
+          @edit-task="editingTask = $event"
+        />
+        <TasksPanel
+          v-else-if="activeTab === 'tasks'"
+          :project="project"
+          @new-task="showNewTaskModal = true"
+          @edit-task="editingTask = $event"
         />
         <div v-else class="empty-state">
           <p>Ta zakładka pojawi się w kolejnym commicie.</p>
         </div>
       </div>
     </div>
+
+    <NewTaskModal :show="showNewTaskModal" :default-project-id="project.id" @close="showNewTaskModal = false" />
+    <EditTaskModal :show="!!editingTask" :task="editingTask" @close="editingTask = null" />
   </BaseModal>
 </template>
