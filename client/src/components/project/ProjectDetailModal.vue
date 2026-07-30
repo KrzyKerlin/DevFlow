@@ -4,8 +4,10 @@ import { useProjectsStore } from "../../stores/projects";
 import BaseModal from "../modals/BaseModal.vue";
 import OverviewPanel from "./OverviewPanel.vue";
 import TasksPanel from "./TasksPanel.vue";
+import CommitsPanel from "./CommitsPanel.vue";
 import NewTaskModal from "../modals/NewTaskModal.vue";
 import EditTaskModal from "../modals/EditTaskModal.vue";
+import AddCommitModal from "../modals/AddCommitModal.vue";
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -36,6 +38,7 @@ watch(
 
 const showNewTaskModal = ref(false);
 const editingTask = ref(null);
+const showAddCommitModal = ref(false);
 </script>
 
 <template>
@@ -70,6 +73,11 @@ const editingTask = ref(null);
           @new-task="showNewTaskModal = true"
           @edit-task="editingTask = $event"
         />
+        <CommitsPanel
+          v-else-if="activeTab === 'commits'"
+          :project="project"
+          @add-commit="showAddCommitModal = true"
+        />
         <div v-else class="empty-state">
           <p>Ta zakładka pojawi się w kolejnym commicie.</p>
         </div>
@@ -78,5 +86,6 @@ const editingTask = ref(null);
 
     <NewTaskModal :show="showNewTaskModal" :default-project-id="project.id" @close="showNewTaskModal = false" />
     <EditTaskModal :show="!!editingTask" :task="editingTask" @close="editingTask = null" />
+    <AddCommitModal :show="showAddCommitModal" :project-id="project.id" @close="showAddCommitModal = false" />
   </BaseModal>
 </template>

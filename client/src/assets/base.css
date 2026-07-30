@@ -395,6 +395,35 @@ input[type="date"].form-input::-webkit-calendar-picker-indicator:hover {
   }
 }
 
+.commit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  margin-bottom: 6px;
+}
+.commit-hash {
+  font-family: monospace;
+  font-size: 0.65rem;
+  color: var(--accent2);
+  background: rgba(59, 130, 246, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.commit-msg {
+  font-size: 0.8rem;
+  flex: 1;
+}
+.commit-date {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
 .tag {
   display: inline-flex;
   align-items: center;
