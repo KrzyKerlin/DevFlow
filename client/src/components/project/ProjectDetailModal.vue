@@ -6,9 +6,11 @@ import OverviewPanel from "./OverviewPanel.vue";
 import TasksPanel from "./TasksPanel.vue";
 import CommitsPanel from "./CommitsPanel.vue";
 import DesignPanel from "./DesignPanel.vue";
+import NotesPanel from "./NotesPanel.vue";
 import NewTaskModal from "../modals/NewTaskModal.vue";
 import EditTaskModal from "../modals/EditTaskModal.vue";
 import AddCommitModal from "../modals/AddCommitModal.vue";
+import EditProjectModal from "../modals/EditProjectModal.vue";
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -40,6 +42,12 @@ watch(
 const showNewTaskModal = ref(false);
 const editingTask = ref(null);
 const showAddCommitModal = ref(false);
+const showEditProjectModal = ref(false);
+
+function onProjectDeleted() {
+  showEditProjectModal.value = false;
+  emit("close");
+}
 </script>
 
 <template>
@@ -47,6 +55,9 @@ const showAddCommitModal = ref(false);
     <template #title>
       <span style="margin-right: 6px">{{ project.emoji }}</span>{{ project.name }}
       <span class="badge badge-blue" style="margin-left: 8px">{{ project.type }}</span>
+    </template>
+    <template #header-actions>
+      <button class="modal-close" title="Edytuj projekt" @click="showEditProjectModal = true">✎</button>
     </template>
 
     <div class="project-panel">
@@ -80,14 +91,18 @@ const showAddCommitModal = ref(false);
           @add-commit="showAddCommitModal = true"
         />
         <DesignPanel v-else-if="activeTab === 'design'" :project="project" />
-        <div v-else class="empty-state">
-          <p>Ta zakładka pojawi się w kolejnym commicie.</p>
-        </div>
+        <NotesPanel v-else-if="activeTab === 'notes'" :project="project" />
       </div>
     </div>
 
     <NewTaskModal :show="showNewTaskModal" :default-project-id="project.id" @close="showNewTaskModal = false" />
     <EditTaskModal :show="!!editingTask" :task="editingTask" @close="editingTask = null" />
     <AddCommitModal :show="showAddCommitModal" :project-id="project.id" @close="showAddCommitModal = false" />
+    <EditProjectModal
+      :show="showEditProjectModal"
+      :project="project"
+      @close="showEditProjectModal = false"
+      @deleted="onProjectDeleted"
+    />
   </BaseModal>
 </template>
