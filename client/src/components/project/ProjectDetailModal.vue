@@ -5,6 +5,7 @@ import BaseModal from "../modals/BaseModal.vue";
 import OverviewPanel from "./OverviewPanel.vue";
 import TasksPanel from "./TasksPanel.vue";
 import CommitsPanel from "./CommitsPanel.vue";
+import DesignPanel from "./DesignPanel.vue";
 import NewTaskModal from "../modals/NewTaskModal.vue";
 import EditTaskModal from "../modals/EditTaskModal.vue";
 import AddCommitModal from "../modals/AddCommitModal.vue";
@@ -78,6 +79,7 @@ const showAddCommitModal = ref(false);
           :project="project"
           @add-commit="showAddCommitModal = true"
         />
+        <DesignPanel v-else-if="activeTab === 'design'" :project="project" />
         <div v-else class="empty-state">
           <p>Ta zakładka pojawi się w kolejnym commicie.</p>
         </div>
