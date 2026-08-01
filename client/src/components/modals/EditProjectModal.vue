@@ -18,7 +18,6 @@ const name = ref("");
 const domain = ref("");
 const desc = ref("");
 const repo = ref("");
-const emoji = ref("");
 
 watch(
   () => props.project,
@@ -28,7 +27,6 @@ watch(
       domain.value = project.domain || "";
       desc.value = project.desc || "";
       repo.value = project.repo || "";
-      emoji.value = project.emoji || "";
     }
   },
   { immediate: true },
@@ -41,7 +39,6 @@ async function save() {
       domain: domain.value.trim(),
       desc: desc.value.trim(),
       repo: repo.value.trim(),
-      emoji: emoji.value || props.project.emoji,
     });
     toast.show("Projekt zaktualizowany!", "success");
     emit("close");
@@ -80,10 +77,6 @@ async function remove() {
     <div class="form-group">
       <label class="form-label">Repozytorium</label>
       <input class="form-input" v-model="repo" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Emoji logo</label>
-      <input class="form-input" v-model="emoji" maxlength="2" style="width: 80px" />
     </div>
     <div style="display: flex; justify-content: space-between; gap: 8px">
       <button class="btn btn-danger" @click="remove">Usuń projekt</button>

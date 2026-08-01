@@ -51,7 +51,7 @@ function onProjectDeleted() {
 </script>
 
 <template>
-  <BaseModal v-if="project" :show="show" max-width="900px" @close="emit('close')">
+  <BaseModal v-if="project" :show="show" max-width="900px" resizable @close="emit('close')">
     <template #title>
       <span style="margin-right: 6px">{{ project.emoji }}</span>{{ project.name }}
       <span class="badge badge-blue" style="margin-left: 8px">{{ project.type }}</span>

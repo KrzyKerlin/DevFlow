@@ -23,6 +23,42 @@
   display: flex;
   flex-direction: column;
 }
+.modal-resizable {
+  position: relative;
+  /* Fixed (not max-) height so switching tabs with very different amounts
+     of content — e.g. many tasks vs. zero commits — doesn't make the
+     whole window visibly jump smaller/larger. */
+  height: calc(100vh - var(--taskbar-h) - 32px);
+}
+.resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: ew-resize;
+  z-index: 5;
+}
+.resize-handle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 2px;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 36px;
+  border-radius: 3px;
+  background: var(--border2);
+  transition: background 0.15s;
+}
+.resize-handle:hover::after {
+  background: var(--accent);
+}
+@media (max-width: 768px) {
+  .resize-handle {
+    display: none;
+  }
+}
 .modal-header {
   display: flex;
   align-items: center;
@@ -36,10 +72,18 @@
   font-size: 1rem;
   font-weight: 700;
   flex: 1;
+  /* Without min-width:0, a flex item refuses to shrink below its content's
+     natural width — a long project name pushed the header-actions/close
+     buttons (edit, ask AI, ✕) clean off the edge on narrow screens. */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .modal-close {
   width: 28px;
   height: 28px;
+  flex-shrink: 0;
   border-radius: 8px;
   background: var(--bg-hover);
   border: 1px solid var(--border);
@@ -66,6 +110,9 @@
     width: 100vw;
     max-height: calc(100vh - var(--taskbar-h));
     border-radius: 16px 16px 0 0;
+  }
+  .modal-resizable {
+    height: calc(100vh - var(--taskbar-h));
   }
   .modal-overlay {
     align-items: flex-end;

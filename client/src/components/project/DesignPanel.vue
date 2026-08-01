@@ -101,7 +101,7 @@ function removeLogo() {
     <div class="section-title" style="margin-top: 20px">Czcionki</div>
     <div v-for="(f, i) in project.fonts" :key="i" class="font-item">
       <div>
-        <div class="font-preview">{{ f.name }}</div>
+        <div class="font-preview" :style="{ fontFamily: f.name }">{{ f.name }}</div>
         <div class="font-type-label">{{ f.type }}</div>
       </div>
       <button class="btn btn-ghost btn-sm" @click="removeFont(i)">🗑</button>

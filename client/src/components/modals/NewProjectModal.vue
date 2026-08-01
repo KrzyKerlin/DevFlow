@@ -44,7 +44,6 @@ const domain = ref("");
 const desc = ref("");
 const type = ref("website");
 const folderId = ref("");
-const emoji = ref("🚀");
 const logo = ref(null);
 const colors = ref([]);
 const colorPicker = ref("#3b82f6");
@@ -62,7 +61,6 @@ function resetForm() {
   desc.value = "";
   type.value = "website";
   folderId.value = "";
-  emoji.value = "🚀";
   logo.value = null;
   colors.value = [];
   fonts.value = [];
@@ -143,7 +141,6 @@ async function create() {
       fonts: fonts.value,
       techs: techs.value,
       logo: logo.value,
-      emoji: emoji.value || "🚀",
       notes: notes.value.trim(),
       repo: repo.value.trim(),
       folderId: folderId.value || null,
@@ -215,10 +212,6 @@ async function create() {
           <img v-else :src="logo" class="logo-preview" alt="" />
           <input type="file" accept="image/*" style="display: none" @change="onLogoUpload" />
         </label>
-        <div class="emoji-row">
-          <span class="hint">lub emoji:</span>
-          <input class="form-input emoji-input" v-model="emoji" maxlength="2" />
-        </div>
       </div>
       <div class="form-group">
         <label class="form-label">Kolory projektu</label>
@@ -245,7 +238,7 @@ async function create() {
         </div>
         <div v-for="(f, i) in fonts" :key="i" class="font-item">
           <div>
-            <div class="font-preview">{{ f.name }}</div>
+            <div class="font-preview" :style="{ fontFamily: f.name }">{{ f.name }}</div>
             <div class="font-type-label">{{ f.type }}</div>
           </div>
           <button class="btn btn-ghost btn-sm" @click="removeFont(i)">🗑</button>
@@ -358,21 +351,6 @@ async function create() {
   height: 44px;
   border-radius: 10px;
   object-fit: cover;
-}
-.emoji-row {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-  align-items: center;
-}
-.hint {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-}
-.emoji-input {
-  width: 80px;
-  text-align: center;
-  font-size: 1.2rem;
 }
 .color-row {
   display: flex;
