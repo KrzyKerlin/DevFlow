@@ -13,6 +13,8 @@ import NewTaskModal from "../components/modals/NewTaskModal.vue";
 import AllTasksModal from "../components/modals/AllTasksModal.vue";
 import NewProjectModal from "../components/modals/NewProjectModal.vue";
 import ProjectDetailModal from "../components/project/ProjectDetailModal.vue";
+import CalendarWidget from "../components/widgets/CalendarWidget.vue";
+import EditTaskModal from "../components/modals/EditTaskModal.vue";
 
 const toast = useToastStore();
 const projectsStore = useProjectsStore();
@@ -60,6 +62,9 @@ function openFolder(id) {
   const count = projectsStore.items.filter((p) => p.folderId === id).length;
   toast.show(`Katalog: ${folder.name} (${count} projektów)`, "info");
 }
+
+const showCalendar = ref(false);
+const editingTask = ref(null);
 </script>
 
 <template>
@@ -90,7 +95,7 @@ function openFolder(id) {
       @new-task="showNewTaskModal = true"
       @new-folder="showNewFolderModal = true"
       @all-tasks="showAllTasksModal = true"
-      @toggle-calendar="notImplementedYet"
+      @toggle-calendar="showCalendar = !showCalendar"
       @toggle-chat="notImplementedYet"
     />
 
@@ -99,6 +104,8 @@ function openFolder(id) {
     <AllTasksModal :show="showAllTasksModal" @close="showAllTasksModal = false" />
     <NewProjectModal :show="showNewProjectModal" @close="showNewProjectModal = false" />
     <ProjectDetailModal :show="!!openProjectId" :project-id="openProjectId" @close="openProjectId = null" />
+    <CalendarWidget :show="showCalendar" @close="showCalendar = false" @edit-task="editingTask = $event" />
+    <EditTaskModal :show="!!editingTask" :task="editingTask" @close="editingTask = null" />
   </div>
 </template>
 

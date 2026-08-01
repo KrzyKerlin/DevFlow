@@ -614,6 +614,23 @@ input[type="date"].form-input::-webkit-calendar-picker-indicator:hover {
   margin-top: 2px;
 }
 
+.floating-widget {
+  position: fixed;
+  bottom: calc(var(--taskbar-h) + 10px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  z-index: 850;
+}
+@media (max-width: 768px) {
+  .floating-widget {
+    width: calc(100vw - 20px);
+    right: 10px !important;
+    left: 10px !important;
+  }
+}
+
 /* Toasts */
 #toast-container {
   position: fixed;
