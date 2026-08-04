@@ -9,6 +9,14 @@ const toast = useToastStore();
 const input = ref("");
 const messagesEl = ref(null);
 
+const suggestions = [
+  "jakie mam zadania?",
+  "przeterminowane zadania",
+  "statystyki",
+  "który projekt ma najwięcej zadań?",
+  "co na dziś?",
+];
+
 watch(
   () => chatStore.isOpen,
   (isOpen) => {
@@ -66,6 +74,10 @@ function fmtTime(iso) {
       <div v-if="chatStore.sending" class="chat-msg ai">
         <div class="chat-bubble">…</div>
       </div>
+    </div>
+
+    <div class="chat-suggestions">
+      <div v-for="s in suggestions" :key="s" class="chat-suggestion-chip" @click="send(s)">{{ s }}</div>
     </div>
 
     <div class="chat-input-area">
@@ -177,6 +189,25 @@ function fmtTime(iso) {
 }
 .chat-msg.user .chat-time {
   text-align: right;
+}
+.chat-suggestions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 0 12px 8px;
+}
+.chat-suggestion-chip {
+  font-size: 0.65rem;
+  padding: 4px 9px;
+  border-radius: 99px;
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.chat-suggestion-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent2);
 }
 .chat-input-area {
   display: flex;
