@@ -1,7 +1,44 @@
 <script setup>
+import { ref, nextTick, watch } from "vue";
 import { useChatStore } from "../../stores/chat";
+import { useToastStore } from "../../stores/toast";
 
 const chatStore = useChatStore();
+const toast = useToastStore();
+
+const input = ref("");
+const messagesEl = ref(null);
+
+watch(
+  () => chatStore.isOpen,
+  (isOpen) => {
+    if (isOpen) chatStore.loadHistory();
+  },
+);
+
+watch(
+  () => chatStore.messages.length,
+  () => {
+    nextTick(() => {
+      if (messagesEl.value) messagesEl.value.scrollTop = messagesEl.value.scrollHeight;
+    });
+  },
+);
+
+async function send(text) {
+  const value = (text ?? input.value).trim();
+  if (!value) return;
+  input.value = "";
+  try {
+    await chatStore.send(value);
+  } catch (err) {
+    toast.show(err.message, "error");
+  }
+}
+
+function fmtTime(iso) {
+  return new Date(iso).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" });
+}
 </script>
 
 <template>
@@ -13,6 +50,32 @@ const chatStore = useChatStore();
         <div class="chat-status">Online</div>
       </div>
       <button class="modal-close" @click="chatStore.close()">✕</button>
+    </div>
+
+    <div ref="messagesEl" class="chat-messages">
+      <div v-if="!chatStore.messages.length" class="chat-msg ai">
+        <div class="chat-bubble">
+          Cześć! 👋 Jestem Synapse AI. Zapytaj mnie o projekty, zadania, kolory, terminy — albo napisz np.
+          "dodaj zadanie: popraw stopkę priorytet wysoki termin jutro".
+        </div>
+      </div>
+      <div v-for="m in chatStore.messages" :key="m.id" class="chat-msg" :class="m.role">
+        <div class="chat-bubble" style="white-space: pre-line">{{ m.text }}</div>
+        <div class="chat-time">{{ fmtTime(m.createdAt) }}</div>
+      </div>
+      <div v-if="chatStore.sending" class="chat-msg ai">
+        <div class="chat-bubble">…</div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <input
+        class="chat-input"
+        v-model="input"
+        placeholder="Zapytaj o projekty, zadania..."
+        @keydown.enter="send()"
+      />
+      <button class="chat-send" @click="send()">➤</button>
     </div>
   </div>
   <button v-else class="chat-launcher" title="AI Asystent" @click="chatStore.toggle()">
@@ -70,5 +133,76 @@ const chatStore = useChatStore();
 .chat-status {
   font-size: 0.65rem;
   color: var(--feat);
+}
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 120px;
+  max-height: 320px;
+}
+.chat-msg {
+  max-width: 85%;
+}
+.chat-msg.ai {
+  align-self: flex-start;
+}
+.chat-msg.user {
+  align-self: flex-end;
+}
+.chat-bubble {
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+.chat-msg.ai .chat-bubble {
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+.chat-msg.user .chat-bubble {
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.chat-time {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  margin-top: 3px;
+  padding: 0 4px;
+}
+.chat-msg.user .chat-time {
+  text-align: right;
+}
+.chat-input-area {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+}
+.chat-input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.78rem;
+  outline: none;
+}
+.chat-send {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  cursor: pointer;
 }
 </style>
