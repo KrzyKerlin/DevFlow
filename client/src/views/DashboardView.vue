@@ -15,6 +15,7 @@ import NewProjectModal from "../components/modals/NewProjectModal.vue";
 import ProjectDetailModal from "../components/project/ProjectDetailModal.vue";
 import CalendarWidget from "../components/widgets/CalendarWidget.vue";
 import EditTaskModal from "../components/modals/EditTaskModal.vue";
+import ChatWidget from "../components/widgets/ChatWidget.vue";
 
 const toast = useToastStore();
 const projectsStore = useProjectsStore();
@@ -96,7 +97,6 @@ const editingTask = ref(null);
       @new-folder="showNewFolderModal = true"
       @all-tasks="showAllTasksModal = true"
       @toggle-calendar="showCalendar = !showCalendar"
-      @toggle-chat="notImplementedYet"
     />
 
     <NewFolderModal :show="showNewFolderModal" @close="showNewFolderModal = false" />
@@ -106,6 +106,7 @@ const editingTask = ref(null);
     <ProjectDetailModal :show="!!openProjectId" :project-id="openProjectId" @close="openProjectId = null" />
     <CalendarWidget :show="showCalendar" @close="showCalendar = false" @edit-task="editingTask = $event" />
     <EditTaskModal :show="!!editingTask" :task="editingTask" @close="editingTask = null" />
+    <ChatWidget />
   </div>
 </template>
 

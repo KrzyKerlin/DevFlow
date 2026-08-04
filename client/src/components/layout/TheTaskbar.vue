@@ -11,7 +11,6 @@ const emit = defineEmits([
   "new-folder",
   "all-tasks",
   "toggle-calendar",
-  "toggle-chat",
 ]);
 
 const auth = useAuthStore();
@@ -46,10 +45,6 @@ function confirmLogout() {
     </button>
 
     <div class="taskbar-right">
-      <button class="taskbar-btn" title="AI Asystent" @click="emit('toggle-chat')">
-        <span class="icon">🤖</span><span class="label">AI</span>
-      </button>
-      <div class="taskbar-sep"></div>
       <UserBadge />
       <button class="taskbar-btn" title="Wyloguj" @click="showLogoutConfirm = true">
         <span class="icon">🚪</span>
