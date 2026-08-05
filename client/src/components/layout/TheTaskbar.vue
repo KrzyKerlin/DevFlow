@@ -27,22 +27,26 @@ function confirmLogout() {
 
 <template>
   <div class="taskbar">
-    <button class="taskbar-btn" title="Nowy projekt" @click="emit('new-project')">
-      <span class="icon">＋</span><span class="label">Nowy projekt</span>
-    </button>
-    <button class="taskbar-btn" title="Nowe zadanie" @click="emit('new-task')">
-      <span class="icon">✓</span><span class="label">Zadanie</span>
-    </button>
-    <button class="taskbar-btn" title="Nowy katalog" @click="emit('new-folder')">
-      <span class="icon">📁</span><span class="label">Katalog</span>
-    </button>
-    <div class="taskbar-sep"></div>
-    <button class="taskbar-btn" title="Wszystkie zadania" @click="emit('all-tasks')">
-      <span class="icon">☰</span><span class="label">Zadania</span>
-    </button>
-    <button class="taskbar-btn" title="Kalendarz" @click="emit('toggle-calendar')">
-      <span class="icon">📅</span><span class="label">Kalendarz</span>
-    </button>
+    <div class="taskbar-left">
+      <button class="taskbar-btn" title="Nowy projekt" @click="emit('new-project')">
+        <span class="icon">＋</span><span class="label">Nowy projekt</span>
+      </button>
+      <button class="taskbar-btn" title="Nowe zadanie" @click="emit('new-task')">
+        <span class="icon">✓</span><span class="label">Zadanie</span>
+      </button>
+      <button class="taskbar-btn" title="Nowy katalog" @click="emit('new-folder')">
+        <span class="icon">📁</span><span class="label">Katalog</span>
+      </button>
+    </div>
+
+    <div class="taskbar-center">
+      <button class="taskbar-btn" title="Wszystkie zadania" @click="emit('all-tasks')">
+        <span class="icon">☰</span><span class="label">Zadania</span>
+      </button>
+      <button class="taskbar-btn" title="Kalendarz" @click="emit('toggle-calendar')">
+        <span class="icon">📅</span><span class="label">Kalendarz</span>
+      </button>
+    </div>
 
     <div class="taskbar-right">
       <UserBadge />
@@ -78,13 +82,28 @@ function confirmLogout() {
   background: rgba(13, 17, 23, 0.92);
   backdrop-filter: blur(20px);
   border-top: 1px solid var(--border);
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   padding: 0 12px;
-  gap: 6px;
+  gap: 10px;
   z-index: 900;
   overflow-x: auto;
   overflow-y: hidden;
+}
+.taskbar-left,
+.taskbar-center {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.taskbar-left {
+  grid-column: 1;
+  justify-self: start;
+}
+.taskbar-center {
+  grid-column: 2;
+  justify-self: center;
 }
 .taskbar-btn {
   display: flex;
@@ -116,7 +135,8 @@ function confirmLogout() {
   flex-shrink: 0;
 }
 .taskbar-right {
-  margin-left: auto;
+  grid-column: 3;
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: 6px;

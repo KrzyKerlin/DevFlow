@@ -118,10 +118,10 @@ const hasReminders = computed(() => overdueTasks.value.length > 0 || dueTodayTas
     </div>
 
     <TheTaskbar
-      @new-project="showNewProjectModal = true"
-      @new-task="showNewTaskModal = true"
-      @new-folder="showNewFolderModal = true"
-      @all-tasks="showAllTasksModal = true"
+      @new-project="showNewProjectModal = !showNewProjectModal"
+      @new-task="showNewTaskModal = !showNewTaskModal"
+      @new-folder="showNewFolderModal = !showNewFolderModal"
+      @all-tasks="showAllTasksModal = !showAllTasksModal"
       @toggle-calendar="showCalendar = !showCalendar"
     />
 
