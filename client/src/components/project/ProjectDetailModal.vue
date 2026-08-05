@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { useProjectsStore } from "../../stores/projects";
+import { useChatStore } from "../../stores/chat";
 import BaseModal from "../modals/BaseModal.vue";
 import OverviewPanel from "./OverviewPanel.vue";
 import TasksPanel from "./TasksPanel.vue";
@@ -20,6 +21,7 @@ const props = defineProps({
 const emit = defineEmits(["close"]);
 
 const projectsStore = useProjectsStore();
+const chatStore = useChatStore();
 
 const tabs = [
   { key: "overview", label: "Przegląd" },
@@ -57,6 +59,7 @@ function onProjectDeleted() {
       <span class="badge badge-blue" style="margin-left: 8px">{{ project.type }}</span>
     </template>
     <template #header-actions>
+      <button class="modal-close" title="Zapytaj AI o ten projekt" @click="chatStore.setContext(project.id)">🤖</button>
       <button class="modal-close" title="Edytuj projekt" @click="showEditProjectModal = true">✎</button>
     </template>
 

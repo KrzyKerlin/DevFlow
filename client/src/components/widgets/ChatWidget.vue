@@ -1,21 +1,35 @@
 <script setup>
-import { ref, nextTick, watch } from "vue";
+import { ref, computed, nextTick, watch } from "vue";
 import { useChatStore } from "../../stores/chat";
+import { useProjectsStore } from "../../stores/projects";
 import { useToastStore } from "../../stores/toast";
 
 const chatStore = useChatStore();
+const projectsStore = useProjectsStore();
 const toast = useToastStore();
 
 const input = ref("");
 const messagesEl = ref(null);
 
-const suggestions = [
+const GLOBAL_SUGGESTIONS = [
   "jakie mam zadania?",
   "przeterminowane zadania",
   "statystyki",
   "który projekt ma najwięcej zadań?",
   "co na dziś?",
 ];
+const SCOPED_SUGGESTIONS = [
+  "ustawienia projektu",
+  "jakie kolory?",
+  "jaki stack?",
+  "zadania wysokiego priorytetu",
+  "ostatnie commity",
+];
+
+const contextProject = computed(
+  () => projectsStore.items.find((p) => p.id === chatStore.contextProjectId) || null,
+);
+const suggestions = computed(() => (contextProject.value ? SCOPED_SUGGESTIONS : GLOBAL_SUGGESTIONS));
 
 watch(
   () => chatStore.isOpen,
@@ -58,6 +72,11 @@ function fmtTime(iso) {
         <div class="chat-status">Online</div>
       </div>
       <button class="modal-close" @click="chatStore.close()">✕</button>
+    </div>
+
+    <div v-if="contextProject" class="chat-context-bar">
+      <span class="lbl">Kontekst: {{ contextProject.name }}</span>
+      <span class="close" @click="chatStore.clearContext()">✕</span>
     </div>
 
     <div ref="messagesEl" class="chat-messages">
@@ -145,6 +164,26 @@ function fmtTime(iso) {
 .chat-status {
   font-size: 0.65rem;
   color: var(--feat);
+}
+.chat-context-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: rgba(59, 130, 246, 0.1);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.68rem;
+  color: var(--accent2);
+}
+.chat-context-bar .lbl {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat-context-bar .close {
+  cursor: pointer;
+  color: var(--text-muted);
 }
 .chat-messages {
   flex: 1;

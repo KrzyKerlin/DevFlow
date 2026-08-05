@@ -7,6 +7,7 @@ export const useChatStore = defineStore("chat", {
     loaded: false,
     sending: false,
     isOpen: false,
+    contextProjectId: null,
   }),
 
   actions: {
@@ -27,7 +28,7 @@ export const useChatStore = defineStore("chat", {
       try {
         const data = await apiFetch("/chat/messages", {
           method: "POST",
-          body: { text },
+          body: { text, contextProjectId: this.contextProjectId },
         });
         this.messages.push({
           id: `local-ai-${Date.now()}`,
@@ -49,6 +50,14 @@ export const useChatStore = defineStore("chat", {
     },
     toggle() {
       this.isOpen = !this.isOpen;
+    },
+
+    setContext(projectId) {
+      this.contextProjectId = projectId;
+      this.isOpen = true;
+    },
+    clearContext() {
+      this.contextProjectId = null;
     },
   },
 });
