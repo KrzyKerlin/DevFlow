@@ -278,6 +278,23 @@ function answerQuery(message, data, matchProject) {
       dueTomorrow.map((t) => `• [${t.type.toUpperCase()}] ${t.title}`).join("\n");
   }
 
+  if (q.includes("pojutrze")) {
+    const dayAfterTomorrow = isoDateInDays(2);
+    const dueThen = scopeTasks.filter((t) => !t.done && t.due === dayAfterTomorrow);
+    if (!dueThen.length) return matchProj ? `Brak zadań na pojutrze w "${matchProj.name}".` : "Nie masz żadnych terminów pojutrze.";
+    return `Zadania na pojutrze${matchProj ? ` w "${matchProj.name}"` : ""}:\n` +
+      dueThen.map((t) => `• [${t.type.toUpperCase()}] ${t.title}`).join("\n");
+  }
+
+  const explicitDateMatch = q.match(/\d{4}-\d{2}-\d{2}/);
+  if (explicitDateMatch) {
+    const dateStr = explicitDateMatch[0];
+    const dueThatDay = scopeTasks.filter((t) => !t.done && t.due === dateStr);
+    if (!dueThatDay.length) return `Brak zadań na ${fmtDate(dateStr)}${matchProj ? ` w "${matchProj.name}"` : ""}.`;
+    return `Zadania na ${fmtDate(dateStr)}${matchProj ? ` w "${matchProj.name}"` : ""}:\n` +
+      dueThatDay.map((t) => `• ${t.title}`).join("\n");
+  }
+
   if (q.includes("wczoraj")) {
     const yesterday = isoDateInDays(-1);
     const dueYesterday = scopeTasks.filter((t) => t.due === yesterday);
@@ -363,7 +380,17 @@ function answerQuery(message, data, matchProject) {
     );
   }
 
-  if (q.includes("zadani") || q.includes("todo") || q.includes("do zrobienia")) {
+  if (
+    q.includes("zadani") ||
+    q.includes("todo") ||
+    q.includes("do zrobienia") ||
+    q.includes("zrobić") ||
+    q.includes("muszę") ||
+    q.includes("musze") ||
+    q.includes("co dalej") ||
+    q.includes("co robić") ||
+    q.includes("co robic")
+  ) {
     const todo = scopeTasks.filter((t) => !t.done);
     if (!todo.length) return matchProj ? `Brak otwartych zadań w projekcie "${matchProj.name}".` : "Nie masz żadnych otwartych zadań!";
     return (
@@ -488,7 +515,7 @@ function parseDue(word) {
 // Parses a natural-language command like:
 // "dodaj zadanie: popraw stopkę priorytet wysoki termin jutro typ fix projekt Portfolio"
 // Returns null when the message isn't a task-creation command.
-function parseTaskCommand(message, projects) {
+function parseTaskCommand(message, projects, contextProjectId) {
   const prefixMatch = message.match(/^\s*dodaj\s+zadanie\s*:?\s*/i);
   if (!prefixMatch) return null;
 
@@ -513,9 +540,12 @@ function parseTaskCommand(message, projects) {
     ? typeMatch[1].toLowerCase()
     : "feat";
   const due = dueMatch ? parseDue(dueMatch[1]) : null;
+  // No "projekt X" in the command? Fall back to whichever project is
+  // pinned as the chat's context (e.g. opened via the 🤖 button on a
+  // project) instead of always creating a global task.
   const project = projectMatch
     ? projects.find((p) => p.name.toLowerCase().includes(projectMatch[1].trim().toLowerCase()))
-    : null;
+    : projects.find((p) => p.id === contextProjectId) || null;
 
   return {
     title,

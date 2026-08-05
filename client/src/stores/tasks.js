@@ -34,5 +34,13 @@ export const useTasksStore = defineStore("tasks", {
       await apiFetch(`/tasks/${id}`, { method: "DELETE" });
       this.items = this.items.filter((t) => t.id !== id);
     },
+
+    // Used when a task arrives from somewhere other than the tasks API call
+    // itself — e.g. the AI chat's "dodaj zadanie" command, which creates the
+    // task as a side effect of POST /chat/messages.
+    addLocal(task) {
+      if (this.items.some((t) => t.id === task.id)) return;
+      this.items.unshift(task);
+    },
   },
 });

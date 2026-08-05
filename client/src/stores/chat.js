@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { apiFetch } from "../api/client";
+import { useTasksStore } from "./tasks";
 
 export const useChatStore = defineStore("chat", {
   state: () => ({
@@ -36,6 +37,12 @@ export const useChatStore = defineStore("chat", {
           text: data.reply,
           createdAt: new Date().toISOString(),
         });
+        // The backend may have created a task as a side effect (the "dodaj
+        // zadanie" command) — reflect it in the tasks store immediately
+        // instead of waiting for a manual reload.
+        if (data.task) {
+          useTasksStore().addLocal(data.task);
+        }
         return data;
       } finally {
         this.sending = false;
@@ -58,6 +65,11 @@ export const useChatStore = defineStore("chat", {
     },
     clearContext() {
       this.contextProjectId = null;
+    },
+
+    async reset() {
+      await apiFetch("/chat/messages", { method: "DELETE" });
+      this.messages = [];
     },
   },
 });

@@ -61,6 +61,15 @@ async function send(text) {
 function fmtTime(iso) {
   return new Date(iso).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" });
 }
+
+async function resetChat() {
+  if (!confirm("Wyczyścić całą rozmowę z AI?")) return;
+  try {
+    await chatStore.reset();
+  } catch (err) {
+    toast.show(err.message, "error");
+  }
+}
 </script>
 
 <template>
@@ -71,6 +80,7 @@ function fmtTime(iso) {
         <div class="chat-name">Synapse AI</div>
         <div class="chat-status">Online</div>
       </div>
+      <button class="modal-close" title="Wyczyść rozmowę" @click="resetChat">↺</button>
       <button class="modal-close" @click="chatStore.close()">✕</button>
     </div>
 

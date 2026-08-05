@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useToastStore } from "../stores/toast";
 import { useProjectsStore } from "../stores/projects";
 import { useFoldersStore } from "../stores/folders";
@@ -66,6 +66,17 @@ function openFolder(id) {
 
 const showCalendar = ref(false);
 const editingTask = ref(null);
+
+// Due-today / overdue reminder shown once after login.
+const showReminder = ref(true);
+const todayStr = new Date().toISOString().slice(0, 10);
+const overdueTasks = computed(() =>
+  tasksStore.items.filter((t) => !t.done && t.due && t.due < todayStr),
+);
+const dueTodayTasks = computed(() =>
+  tasksStore.items.filter((t) => !t.done && t.due === todayStr),
+);
+const hasReminders = computed(() => overdueTasks.value.length > 0 || dueTodayTasks.value.length > 0);
 </script>
 
 <template>
@@ -89,6 +100,21 @@ const editingTask = ref(null);
         @contextmenu="notImplementedYet"
         @move="moveProject"
       />
+    </div>
+
+    <div v-if="hasReminders && showReminder" class="reminder-card">
+      <div class="reminder-header">
+        <span>🔔 Przypomnienie</span>
+        <button class="reminder-close" @click="showReminder = false">✕</button>
+      </div>
+      <div v-if="overdueTasks.length" class="reminder-group">
+        <div class="reminder-group-title overdue">Po terminie ({{ overdueTasks.length }})</div>
+        <div v-for="t in overdueTasks" :key="t.id" class="reminder-item">{{ t.title }} — {{ t.due }}</div>
+      </div>
+      <div v-if="dueTodayTasks.length" class="reminder-group">
+        <div class="reminder-group-title">Na dziś ({{ dueTodayTasks.length }})</div>
+        <div v-for="t in dueTodayTasks" :key="t.id" class="reminder-item">{{ t.title }}</div>
+      </div>
     </div>
 
     <TheTaskbar
@@ -119,5 +145,71 @@ const editingTask = ref(null);
   position: relative;
   height: calc(100vh - var(--taskbar-h));
   overflow: auto;
+}
+.reminder-card {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 280px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 12px 14px;
+  z-index: 950;
+}
+.reminder-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.reminder-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+.reminder-close:hover {
+  color: var(--fix);
+}
+.reminder-group {
+  margin-bottom: 8px;
+}
+.reminder-group-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--js);
+  margin-bottom: 4px;
+}
+.reminder-group-title.overdue {
+  color: var(--fix);
+}
+.reminder-item {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 2px 0;
+}
+@media (max-width: 768px) {
+  .reminder-card {
+    top: 10px;
+    right: 10px;
+    width: 200px;
+    padding: 10px 12px;
+  }
+  .reminder-header {
+    font-size: 0.75rem;
+  }
+  .reminder-group-title {
+    font-size: 0.6rem;
+  }
+  .reminder-item {
+    font-size: 0.68rem;
+  }
 }
 </style>

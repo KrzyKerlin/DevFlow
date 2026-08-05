@@ -31,6 +31,11 @@ function listMessages(req, res) {
   res.json(rows.map(serializeMessage));
 }
 
+function clearMessages(req, res) {
+  db.prepare("DELETE FROM chat_messages WHERE user_id = ?").run(req.user.id);
+  res.status(204).end();
+}
+
 function loadUserData(userId) {
   const projects = db
     .prepare("SELECT * FROM projects WHERE user_id = ?")
@@ -61,7 +66,7 @@ function sendMessage(req, res) {
   const data = loadUserData(req.user.id);
 
   // Task-creation command takes priority over question-answering.
-  const command = parseTaskCommand(text, data.projects);
+  const command = parseTaskCommand(text, data.projects, req.body.contextProjectId);
   if (command) {
     const task = insertTask(req.user.id, command);
     const project = task.projectId
@@ -93,4 +98,4 @@ function sendMessage(req, res) {
   res.json({ reply });
 }
 
-module.exports = { listMessages, sendMessage };
+module.exports = { listMessages, sendMessage, clearMessages };
