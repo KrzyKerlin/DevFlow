@@ -16,6 +16,7 @@ import ProjectDetailModal from "../components/project/ProjectDetailModal.vue";
 import CalendarWidget from "../components/widgets/CalendarWidget.vue";
 import EditTaskModal from "../components/modals/EditTaskModal.vue";
 import ChatWidget from "../components/widgets/ChatWidget.vue";
+import ContextMenu from "../components/common/ContextMenu.vue";
 
 const toast = useToastStore();
 const projectsStore = useProjectsStore();
@@ -35,10 +36,6 @@ onMounted(async () => {
     toast.show(err.message, "error");
   }
 });
-
-function notImplementedYet() {
-  toast.show("Ta funkcja pojawi się w kolejnym commicie.", "info");
-}
 
 function moveProject(id, x, y) {
   projectsStore.update(id, { x, y }).catch((err) => toast.show(err.message, "error"));
@@ -88,6 +85,52 @@ function onDesktopScroll() {
 function scrollToTop() {
   desktopAreaEl.value?.scrollTo({ top: 0, behavior: "smooth" });
 }
+
+const contextMenu = ref({ show: false, x: 0, y: 0, items: [] });
+
+async function deleteProject(id) {
+  if (!confirm("Usunąć projekt? Zadania i commity projektu też zostaną usunięte.")) return;
+  try {
+    await projectsStore.remove(id);
+    toast.show("Projekt usunięty", "info");
+  } catch (err) {
+    toast.show(err.message, "error");
+  }
+}
+
+async function deleteFolder(id) {
+  if (!confirm("Usunąć katalog? Projekty w nim nie zostaną usunięte.")) return;
+  try {
+    await foldersStore.remove(id);
+    toast.show("Katalog usunięty", "info");
+  } catch (err) {
+    toast.show(err.message, "error");
+  }
+}
+
+function onProjectContextMenu(event, id) {
+  contextMenu.value = {
+    show: true,
+    x: event.clientX,
+    y: event.clientY,
+    items: [
+      { label: "Otwórz", action: () => openProject(id) },
+      { label: "Usuń", danger: true, action: () => deleteProject(id) },
+    ],
+  };
+}
+
+function onFolderContextMenu(event, id) {
+  contextMenu.value = {
+    show: true,
+    x: event.clientX,
+    y: event.clientY,
+    items: [
+      { label: "Otwórz", action: () => openFolder(id) },
+      { label: "Usuń", danger: true, action: () => deleteFolder(id) },
+    ],
+  };
+}
 </script>
 
 <template>
@@ -99,7 +142,7 @@ function scrollToTop() {
         :folder="folder"
         :style="{ left: folder.x + 'px', top: folder.y + 'px' }"
         @open="openFolder"
-        @contextmenu="notImplementedYet"
+        @contextmenu="onFolderContextMenu"
         @move="moveFolder"
       />
       <ProjectCard
@@ -108,7 +151,7 @@ function scrollToTop() {
         :project="project"
         :style="{ left: project.x + 'px', top: project.y + 'px' }"
         @open="openProject"
-        @contextmenu="notImplementedYet"
+        @contextmenu="onProjectContextMenu"
         @move="moveProject"
       />
     </div>
@@ -146,6 +189,13 @@ function scrollToTop() {
     <CalendarWidget :show="showCalendar" @close="showCalendar = false" @edit-task="editingTask = $event" />
     <EditTaskModal :show="!!editingTask" :task="editingTask" @close="editingTask = null" />
     <ChatWidget />
+    <ContextMenu
+      :show="contextMenu.show"
+      :x="contextMenu.x"
+      :y="contextMenu.y"
+      :items="contextMenu.items"
+      @close="contextMenu.show = false"
+    />
   </div>
 </template>
 
