@@ -46,4 +46,9 @@ onUnmounted(() => clearInterval(timer));
   font-size: 0.65rem;
   color: var(--text-muted);
 }
+@media (max-width: 480px) {
+  .clock-widget {
+    display: none;
+  }
+}
 </style>

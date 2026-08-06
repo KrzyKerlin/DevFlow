@@ -77,11 +77,22 @@ const dueTodayTasks = computed(() =>
   tasksStore.items.filter((t) => !t.done && t.due === todayStr),
 );
 const hasReminders = computed(() => overdueTasks.value.length > 0 || dueTodayTasks.value.length > 0);
+
+// Scroll-to-top for the mobile project list, which stacks cards vertically
+// and can get long once there are many projects.
+const desktopAreaEl = ref(null);
+const showScrollTop = ref(false);
+function onDesktopScroll() {
+  showScrollTop.value = !!desktopAreaEl.value && desktopAreaEl.value.scrollTop > 300;
+}
+function scrollToTop() {
+  desktopAreaEl.value?.scrollTo({ top: 0, behavior: "smooth" });
+}
 </script>
 
 <template>
   <div class="dashboard">
-    <div class="desktop-area">
+    <div class="desktop-area" ref="desktopAreaEl" @scroll="onDesktopScroll">
       <FolderCard
         v-for="folder in foldersStore.items"
         :key="folder.id"
@@ -101,6 +112,8 @@ const hasReminders = computed(() => overdueTasks.value.length > 0 || dueTodayTas
         @move="moveProject"
       />
     </div>
+
+    <button v-if="showScrollTop" class="scroll-top-btn" title="Przewiń do góry" @click="scrollToTop">↑</button>
 
     <div v-if="hasReminders && showReminder" class="reminder-card">
       <div class="reminder-header">
@@ -145,6 +158,21 @@ const hasReminders = computed(() => overdueTasks.value.length > 0 || dueTodayTas
   position: relative;
   height: calc(100vh - var(--taskbar-h));
   overflow: auto;
+}
+.scroll-top-btn {
+  position: fixed;
+  bottom: calc(var(--taskbar-h) + 70px);
+  left: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  z-index: 850;
 }
 .reminder-card {
   position: fixed;
