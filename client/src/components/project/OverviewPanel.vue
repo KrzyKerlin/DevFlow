@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { useTasksStore } from "../../stores/tasks";
 import { useCommitsStore } from "../../stores/commits";
 import TaskItem from "../tasks/TaskItem.vue";
+import { Globe, Rocket } from "@lucide/vue";
 
 const props = defineProps({
   project: { type: Object, required: true },
@@ -27,11 +28,13 @@ const progress = computed(() =>
     <div class="proj-overview-header">
       <div class="proj-logo-big">
         <img v-if="project.logo" :src="project.logo" alt="" />
-        <span v-else>{{ project.emoji || "🚀" }}</span>
+        <Rocket v-else :size="26" />
       </div>
       <div class="proj-info">
         <h2>{{ project.name }}</h2>
-        <div v-if="project.domain" class="domain">🌐 {{ project.domain }}</div>
+        <div v-if="project.domain" class="domain">
+          <Globe :size="12" style="display: inline-block; vertical-align: -2px" /> {{ project.domain }}
+        </div>
         <div v-if="project.desc" class="desc">{{ project.desc }}</div>
       </div>
     </div>

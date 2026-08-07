@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "../../stores/auth";
 import ClockWidget from "./ClockWidget.vue";
 import UserBadge from "./UserBadge.vue";
+import { Plus, ListPlus, FolderPlus, ListChecks, CalendarDays, LogOut } from "@lucide/vue";
 
 const emit = defineEmits([
   "new-project",
@@ -29,29 +30,29 @@ function confirmLogout() {
   <div class="taskbar">
     <div class="taskbar-left">
       <button class="taskbar-btn" title="Nowy projekt" @click="emit('new-project')">
-        <span class="icon">＋</span><span class="label">Nowy projekt</span>
+        <Plus class="icon" :size="16" /><span class="label">Nowy projekt</span>
       </button>
       <button class="taskbar-btn" title="Nowe zadanie" @click="emit('new-task')">
-        <span class="icon">✓</span><span class="label">Zadanie</span>
+        <ListPlus class="icon" :size="16" /><span class="label">Zadanie</span>
       </button>
       <button class="taskbar-btn" title="Nowy katalog" @click="emit('new-folder')">
-        <span class="icon">📁</span><span class="label">Katalog</span>
+        <FolderPlus class="icon" :size="16" /><span class="label">Katalog</span>
       </button>
     </div>
 
     <div class="taskbar-center">
       <button class="taskbar-btn" title="Wszystkie zadania" @click="emit('all-tasks')">
-        <span class="icon">☰</span><span class="label">Zadania</span>
+        <ListChecks class="icon" :size="16" /><span class="label">Zadania</span>
       </button>
       <button class="taskbar-btn" title="Kalendarz" @click="emit('toggle-calendar')">
-        <span class="icon">📅</span><span class="label">Kalendarz</span>
+        <CalendarDays class="icon" :size="16" /><span class="label">Kalendarz</span>
       </button>
     </div>
 
     <div class="taskbar-right">
       <UserBadge />
       <button class="taskbar-btn" title="Wyloguj" @click="showLogoutConfirm = true">
-        <span class="icon">🚪</span>
+        <LogOut class="icon" :size="16" />
       </button>
       <div class="taskbar-sep"></div>
       <ClockWidget />

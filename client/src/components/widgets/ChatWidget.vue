@@ -3,6 +3,7 @@ import { ref, computed, nextTick, watch } from "vue";
 import { useChatStore } from "../../stores/chat";
 import { useProjectsStore } from "../../stores/projects";
 import { useToastStore } from "../../stores/toast";
+import { Bot, X, Send, RotateCcw } from "@lucide/vue";
 
 const chatStore = useChatStore();
 const projectsStore = useProjectsStore();
@@ -75,18 +76,18 @@ async function resetChat() {
 <template>
   <div v-if="chatStore.isOpen" class="floating-widget chat-widget" style="right: 10px; width: 340px">
     <div class="chat-header">
-      <div class="chat-avatar">🤖</div>
+      <div class="chat-avatar"><Bot :size="18" /></div>
       <div style="flex: 1">
         <div class="chat-name">Synapse AI</div>
         <div class="chat-status">Online</div>
       </div>
-      <button class="modal-close" title="Wyczyść rozmowę" @click="resetChat">↺</button>
-      <button class="modal-close" @click="chatStore.close()">✕</button>
+      <button class="modal-close" title="Wyczyść rozmowę" @click="resetChat"><RotateCcw :size="15" /></button>
+      <button class="modal-close" @click="chatStore.close()"><X :size="15" /></button>
     </div>
 
     <div v-if="contextProject" class="chat-context-bar">
       <span class="lbl">Kontekst: {{ contextProject.name }}</span>
-      <span class="close" @click="chatStore.clearContext()">✕</span>
+      <span class="close" @click="chatStore.clearContext()"><X :size="12" /></span>
     </div>
 
     <div ref="messagesEl" class="chat-messages">
@@ -116,11 +117,11 @@ async function resetChat() {
         placeholder="Zapytaj o projekty, zadania..."
         @keydown.enter="send()"
       />
-      <button class="chat-send" @click="send()">➤</button>
+      <button class="chat-send" @click="send()"><Send :size="15" /></button>
     </div>
   </div>
   <button v-else class="chat-launcher" title="AI Asystent" @click="chatStore.toggle()">
-    🤖
+    <Bot :size="22" />
   </button>
 </template>
 

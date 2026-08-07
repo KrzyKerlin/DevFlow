@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useProjectsStore } from "../../stores/projects";
 import { useToastStore } from "../../stores/toast";
+import { X, Trash2, Rocket } from "@lucide/vue";
 
 const props = defineProps({
   project: { type: Object, required: true },
@@ -78,7 +79,7 @@ function removeLogo() {
     <div class="logo-row">
       <div class="logo-preview">
         <img v-if="project.logo" :src="project.logo" alt="" />
-        <span v-else>{{ project.emoji || "🚀" }}</span>
+        <Rocket v-else :size="18" />
       </div>
       <label class="btn btn-ghost btn-sm">
         Zmień logo
@@ -90,7 +91,7 @@ function removeLogo() {
     <div class="section-title" style="margin-top: 20px">Kolory projektu</div>
     <div class="color-swatches" style="margin-bottom: 10px">
       <div v-for="c in project.colors" :key="c" class="color-swatch" :style="{ background: c }" :title="c">
-        <div class="remove-swatch" @click="removeColor(c)">✕</div>
+        <div class="remove-swatch" @click="removeColor(c)"><X :size="9" /></div>
       </div>
     </div>
     <div class="color-row">
@@ -104,7 +105,7 @@ function removeLogo() {
         <div class="font-preview" :style="{ fontFamily: f.name }">{{ f.name }}</div>
         <div class="font-type-label">{{ f.type }}</div>
       </div>
-      <button class="btn btn-ghost btn-sm" @click="removeFont(i)">🗑</button>
+      <button class="btn btn-ghost btn-sm" @click="removeFont(i)"><Trash2 :size="13" /></button>
     </div>
     <div class="font-row">
       <input class="form-input" v-model="fontName" placeholder="Dodaj czcionkę..." />
@@ -126,7 +127,7 @@ function removeLogo() {
         title="Kliknij, żeby usunąć"
         @click="removeTech(i)"
       >
-        {{ t }} ✕
+        {{ t }} <X :size="10" style="display: inline-block; vertical-align: -1px" />
       </span>
     </div>
     <div class="font-row">

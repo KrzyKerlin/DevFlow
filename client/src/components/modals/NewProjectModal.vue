@@ -4,6 +4,20 @@ import { useProjectsStore } from "../../stores/projects";
 import { useFoldersStore } from "../../stores/folders";
 import { useToastStore } from "../../stores/toast";
 import BaseModal from "./BaseModal.vue";
+import {
+  ArrowRight,
+  ArrowLeft,
+  Check,
+  ImagePlus,
+  X,
+  Trash2,
+  Globe,
+  AppWindow,
+  ShoppingCart,
+  Code,
+  Smartphone,
+  Puzzle,
+} from "@lucide/vue";
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -30,12 +44,12 @@ const TECH_OPTIONS = [
 ];
 
 const TYPE_OPTIONS = [
-  { value: "website", label: "Website" },
-  { value: "webapp", label: "Web App" },
-  { value: "ecommerce", label: "E-commerce" },
-  { value: "api", label: "API/Backend" },
-  { value: "mobile", label: "Mobile" },
-  { value: "other", label: "Inne" },
+  { value: "website", label: "Website", icon: Globe },
+  { value: "webapp", label: "Web App", icon: AppWindow },
+  { value: "ecommerce", label: "E-commerce", icon: ShoppingCart },
+  { value: "api", label: "API/Backend", icon: Code },
+  { value: "mobile", label: "Mobile", icon: Smartphone },
+  { value: "other", label: "Inne", icon: Puzzle },
 ];
 
 const step = ref(1);
@@ -187,7 +201,8 @@ async function create() {
             :class="{ selected: type === opt.value }"
             @click="type = opt.value"
           >
-            {{ opt.label }}
+            <component :is="opt.icon" :size="18" />
+            <span>{{ opt.label }}</span>
           </div>
         </div>
       </div>
@@ -199,7 +214,7 @@ async function create() {
         </select>
       </div>
       <div class="wizard-actions right">
-        <button class="btn btn-primary" @click="nextFromStep1">Dalej →</button>
+        <button class="btn btn-primary" @click="nextFromStep1">Dalej <ArrowRight :size="14" /></button>
       </div>
     </div>
 
@@ -208,7 +223,7 @@ async function create() {
       <div class="form-group">
         <label class="form-label">Logo projektu</label>
         <label class="logo-upload-area">
-          <span v-if="!logo">📷 Kliknij aby przesłać logo</span>
+          <span v-if="!logo" class="upload-hint"><ImagePlus :size="16" /> Kliknij aby przesłać logo</span>
           <img v-else :src="logo" class="logo-preview" alt="" />
           <input type="file" accept="image/*" style="display: none" @change="onLogoUpload" />
         </label>
@@ -221,7 +236,7 @@ async function create() {
         </div>
         <div class="color-swatches">
           <div v-for="(c, i) in colors" :key="c" class="color-swatch" :style="{ background: c }" :title="c">
-            <div class="remove-swatch" @click="removeColor(i)">✕</div>
+            <div class="remove-swatch" @click="removeColor(i)"><X :size="9" /></div>
           </div>
         </div>
       </div>
@@ -241,12 +256,12 @@ async function create() {
             <div class="font-preview" :style="{ fontFamily: f.name }">{{ f.name }}</div>
             <div class="font-type-label">{{ f.type }}</div>
           </div>
-          <button class="btn btn-ghost btn-sm" @click="removeFont(i)">🗑</button>
+          <button class="btn btn-ghost btn-sm" @click="removeFont(i)"><Trash2 :size="13" /></button>
         </div>
       </div>
       <div class="wizard-actions">
-        <button class="btn btn-ghost" @click="step = 1">← Wstecz</button>
-        <button class="btn btn-primary" @click="step = 3">Dalej →</button>
+        <button class="btn btn-ghost" @click="step = 1"><ArrowLeft :size="14" /> Wstecz</button>
+        <button class="btn btn-primary" @click="step = 3">Dalej <ArrowRight :size="14" /></button>
       </div>
     </div>
 
@@ -275,8 +290,8 @@ async function create() {
         <input class="form-input" v-model="repo" placeholder="https://github.com/..." />
       </div>
       <div class="wizard-actions">
-        <button class="btn btn-ghost" @click="step = 2">← Wstecz</button>
-        <button class="btn btn-primary" @click="create">✓ Utwórz projekt</button>
+        <button class="btn btn-ghost" @click="step = 2"><ArrowLeft :size="14" /> Wstecz</button>
+        <button class="btn btn-primary" @click="create"><Check :size="14" /> Utwórz projekt</button>
       </div>
     </div>
   </BaseModal>
@@ -319,7 +334,11 @@ async function create() {
   gap: 6px;
 }
 .type-opt {
-  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 4px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   text-align: center;
@@ -351,6 +370,11 @@ async function create() {
   height: 44px;
   border-radius: 10px;
   object-fit: cover;
+}
+.upload-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 .color-row {
   display: flex;

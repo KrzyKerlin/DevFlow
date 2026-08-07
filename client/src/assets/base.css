@@ -315,6 +315,9 @@ input[type="date"].form-input::-webkit-calendar-picker-indicator:hover {
   color: var(--text-muted);
   cursor: pointer;
   font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .task-action-btn.edit:hover {
   background: var(--js-bg);

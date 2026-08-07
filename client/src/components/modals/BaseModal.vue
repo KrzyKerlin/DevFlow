@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import { X } from "@lucide/vue";
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -58,7 +59,7 @@ function handleOverlayClick(e) {
         <div class="modal-header">
           <span class="modal-title"><slot name="title">{{ title }}</slot></span>
           <slot name="header-actions" />
-          <button class="modal-close" @click="emit('close')">✕</button>
+          <button class="modal-close" @click="emit('close')"><X :size="15" /></button>
         </div>
         <div class="modal-body">
           <slot />

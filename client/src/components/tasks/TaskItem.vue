@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { useTasksStore } from "../../stores/tasks";
 import { useProjectsStore } from "../../stores/projects";
 import { useToastStore } from "../../stores/toast";
+import { Check, Pencil, Trash2, TriangleAlert } from "@lucide/vue";
 
 const props = defineProps({
   task: { type: Object, required: true },
@@ -68,21 +69,22 @@ async function remove() {
   <div class="task-item" :class="{ done: task.done }">
     <div class="task-priority" :style="{ background: priorityColors[task.priority] }"></div>
     <div class="task-check" :class="{ checked: task.done }" @click="toggle">
-      <span v-if="task.done">✓</span>
+      <Check v-if="task.done" :size="12" />
     </div>
     <div class="task-content">
       <div class="task-title">{{ task.title }}</div>
       <div class="task-meta">
         <span class="tag" :class="`tag-${task.type}`">{{ typeLabels[task.type] || task.type }}</span>
         <span v-if="task.due" class="task-date" :style="{ color: isOverdue ? 'var(--fix)' : '' }">
-          {{ fmtDate(task.due) }}{{ isOverdue ? " ⚠" : "" }}
+          {{ fmtDate(task.due) }}
+          <TriangleAlert v-if="isOverdue" :size="11" style="display: inline-block; vertical-align: -1px" />
         </span>
         <span v-if="project" class="badge badge-blue">{{ project.name }}</span>
       </div>
     </div>
     <div class="task-actions">
-      <button class="task-action-btn edit" title="Edytuj" @click="emit('edit', task)">✎</button>
-      <button class="task-action-btn del" title="Usuń" @click="remove">🗑</button>
+      <button class="task-action-btn edit" title="Edytuj" @click="emit('edit', task)"><Pencil :size="12" /></button>
+      <button class="task-action-btn del" title="Usuń" @click="remove"><Trash2 :size="12" /></button>
     </div>
   </div>
 </template>

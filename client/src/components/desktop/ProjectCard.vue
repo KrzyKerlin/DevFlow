@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { useTasksStore } from "../../stores/tasks";
 import { useDraggable } from "../../composables/useDraggable";
+import { ArrowRight, Rocket } from "@lucide/vue";
 
 const props = defineProps({
   project: { type: Object, required: true },
@@ -29,10 +30,10 @@ const accentColor = computed(() => props.project.colors[0] || "#3b82f6");
     @dblclick="emit('open', project.id)"
     @contextmenu.prevent="emit('contextmenu', $event, project.id)"
   >
-    <button class="open-btn" @click="emit('open', project.id)">→</button>
+    <button class="open-btn" @click="emit('open', project.id)"><ArrowRight :size="12" /></button>
     <div class="logo">
       <img v-if="project.logo" :src="project.logo" alt="" />
-      <span v-else>{{ project.emoji || "🚀" }}</span>
+      <Rocket v-else :size="20" />
     </div>
     <div class="title">{{ project.name }}</div>
     <div v-if="project.domain" class="domain">{{ project.domain }}</div>
@@ -95,6 +96,9 @@ const accentColor = computed(() => props.project.colors[0] || "#3b82f6");
   color: var(--text-muted);
   cursor: pointer;
   font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .open-btn:hover {
   background: var(--accent);

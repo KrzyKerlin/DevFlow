@@ -12,6 +12,7 @@ import NewTaskModal from "../modals/NewTaskModal.vue";
 import EditTaskModal from "../modals/EditTaskModal.vue";
 import AddCommitModal from "../modals/AddCommitModal.vue";
 import EditProjectModal from "../modals/EditProjectModal.vue";
+import { Bot, Pencil, Rocket } from "@lucide/vue";
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -55,12 +56,19 @@ function onProjectDeleted() {
 <template>
   <BaseModal v-if="project" :show="show" max-width="900px" resizable @close="emit('close')">
     <template #title>
-      <span style="margin-right: 6px">{{ project.emoji }}</span>{{ project.name }}
+      <img
+        v-if="project.logo"
+        :src="project.logo"
+        alt=""
+        style="width: 20px; height: 20px; border-radius: 5px; object-fit: cover; margin-right: 6px; vertical-align: -4px"
+      />
+      <Rocket v-else :size="16" style="margin-right: 6px; vertical-align: -3px" />
+      {{ project.name }}
       <span class="badge badge-blue" style="margin-left: 8px">{{ project.type }}</span>
     </template>
     <template #header-actions>
-      <button class="modal-close" title="Zapytaj AI o ten projekt" @click="chatStore.setContext(project.id)">🤖</button>
-      <button class="modal-close" title="Edytuj projekt" @click="showEditProjectModal = true">✎</button>
+      <button class="modal-close" title="Zapytaj AI o ten projekt" @click="chatStore.setContext(project.id)"><Bot :size="15" /></button>
+      <button class="modal-close" title="Edytuj projekt" @click="showEditProjectModal = true"><Pencil :size="14" /></button>
     </template>
 
     <div class="project-panel">

@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { useProjectsStore } from "../../stores/projects";
 import { useDraggable } from "../../composables/useDraggable";
+import { ArrowRight, Folder } from "@lucide/vue";
 
 const props = defineProps({
   folder: { type: Object, required: true },
@@ -26,8 +27,8 @@ const projectCount = computed(
     @dblclick="emit('open', folder.id)"
     @contextmenu.prevent="emit('contextmenu', $event, folder.id)"
   >
-    <button class="open-btn" @click="emit('open', folder.id)">→</button>
-    <div class="icon">📁</div>
+    <button class="open-btn" @click="emit('open', folder.id)"><ArrowRight :size="12" /></button>
+    <div class="icon"><Folder :size="30" /></div>
     <div class="title">{{ folder.name }}</div>
     <div class="count">{{ projectCount }} projekt{{ projectCount === 1 ? "" : "ów" }}</div>
   </div>
@@ -78,9 +79,12 @@ const projectCount = computed(
   color: var(--text-muted);
   cursor: pointer;
   font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .icon {
-  font-size: 2rem;
+  color: var(--js);
   margin-bottom: 8px;
 }
 .title {

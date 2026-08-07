@@ -1,19 +1,20 @@
 <script setup>
 import { useToastStore } from "../../stores/toast";
+import { CircleCheck, CircleAlert, Info } from "@lucide/vue";
 
 const toastStore = useToastStore();
 
 const icons = {
-  success: "✓",
-  error: "!",
-  info: "i",
+  success: CircleCheck,
+  error: CircleAlert,
+  info: Info,
 };
 </script>
 
 <template>
   <div id="toast-container">
     <div v-for="t in toastStore.toasts" :key="t.id" class="toast" :class="t.type">
-      <span class="toast-icon" :class="t.type">{{ icons[t.type] }}</span>
+      <span class="toast-icon" :class="t.type"><component :is="icons[t.type]" :size="14" /></span>
       <span>{{ t.message }}</span>
     </div>
   </div>
